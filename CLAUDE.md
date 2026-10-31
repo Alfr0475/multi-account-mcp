@@ -26,7 +26,7 @@ Dev Container は使わず、Mac の上で直接開発する（`docs/decisions.m
 ## 最初のタスク
 
 - [x] 開発環境を決める（Dev Container の指針を踏まえて）
-- [ ] 要調査：Claude Desktop から起動したプロセスで、`op` の Touch ID 承認がちゃんと出るか
+- [x] 要調査：Claude Desktop から起動したプロセスで、`op` の Touch ID 承認がちゃんと出るか
 - [ ] Google Cloud で OAuth クライアントを作って「外部」「本番」にし、Workspace の管理コンソールでこのアプリを信頼済みにする
 - [ ] 3層（通信・共通・サービス）の骨組みと、stdio の MCP サーバーを作る
 - [ ] `login`：ブラウザで Google にログインし、トークンを 1Password に保存する
