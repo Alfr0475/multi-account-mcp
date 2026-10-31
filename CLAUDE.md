@@ -16,16 +16,21 @@ Claude Code・Claude Desktop から、同じサービスの複数アカウント
 
 ## 開発環境
 
-未決。最初のタスクで決める（候補は `docs/design.md` の「懸念点・リスク」にある案1・案2）。
+Dev Container は使わず、Mac の上で直接開発する（`docs/decisions.md` の 20）。Mac を汚さないため、次を守る。
+
+- Node はリポジトリ直下の `mise.toml` で固定している。Bash ツールでは `mise exec -- npm ...` のように呼ぶ
+- `npm -g` は使わない。ツールは devDependencies に入れて `npm run` / `npx` で呼ぶ
+- `.npmrc` の `ignore-scripts=true` を外さない。依存を足すときは本当に要るかを先に考える
+- テストや開発中は、設定フォルダとログを環境変数で一時ディレクトリに向け、本番の `~/.config/multi-account-mcp/` と `~/Library/Logs/multi-account-mcp.log` を汚さない
 
 ## 最初のタスク
 
-- [ ] 開発環境を決める（Dev Container の指針を踏まえて）
+- [x] 開発環境を決める（Dev Container の指針を踏まえて）
 - [ ] 要調査：Claude Desktop から起動したプロセスで、`op` の Touch ID 承認がちゃんと出るか
 - [ ] Google Cloud で OAuth クライアントを作って「外部」「本番」にし、Workspace の管理コンソールでこのアプリを信頼済みにする
 - [ ] 3層（通信・共通・サービス）の骨組みと、stdio の MCP サーバーを作る
 - [ ] `login`：ブラウザで Google にログインし、トークンを 1Password に保存する
-- [ ] `register` と `list_accounts`：Claude Code・Claude Desktop に登録し、Claude からアカウント一覧が見える状態にする
+- [ ] `register`・`unregister` と `list_accounts`：Claude Code・Claude Desktop に登録し、Claude からアカウント一覧が見える状態にする
 - [ ] 読むツール（`drive_search`、`drive_read`、`sheets_read`）と、アカウントの自動解決（ファイル→アカウントの記録）
 - [ ] 書く・作るツール（`sheets_write`、`sheets_append`、`drive_create`、`drive_copy`、`drive_rename`）と操作ログ
 - [ ] `drive_trash`（`destructiveHint` を付ける）

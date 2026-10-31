@@ -126,3 +126,14 @@
 - **決めたこと**: 名前は `multi-account-mcp`。表示名は Multi-Account MCP とし、場所によって表記を分ける（使い分けは `docs/design.md` の「名前の表記」）
 - **理由**: 説明的で迷わないため
 - **退けた案**: 記録なし
+
+## 20. 開発環境は Dev Container の例外にし、Mac の上で直接開発する
+
+- **決めたこと**: Dev Container は使わず、Mac の上で開発・実行する。代わりに、Mac の環境を汚さないよう次を守る
+  - Node はリポジトリ直下の `mise.toml` でパッチまで固定する（グローバルには入れない）。`register` が Node の絶対パスを登録するので、更新したら `register` を打ち直す
+  - npm パッケージはリポジトリの `node_modules` だけに入れる。`npm -g` は使わず、ツールは devDependencies に入れて `npm run` / `npx` で呼ぶ
+  - `.npmrc` に `ignore-scripts=true` を書き、依存の install スクリプトをホスト上で動かさない。依存は最小限にし、lockfile をコミットして `npm ci` で入れる
+  - 設定フォルダとログの場所は環境変数で差し替えられるようにし、テストや開発中は一時ディレクトリを使う
+  - `register` と対になる `unregister` を用意する。`logout` → `unregister` → リポジトリ削除 → `mise uninstall node@<ver>` で元に戻せるようにする
+- **理由**: このサーバーは Claude Code・Claude Desktop が Mac の上で直接起動し、1Password の Touch ID も `~/Library/Logs` も Mac の上でしか使えないため。Dev Container を選んでいたのは Mac の環境を汚さないためで、DB などのミドルウェアを使わないこのプロジェクトでは、上の対策で同じ目的を果たせる
+- **退けた案**: 開発とテストは Dev Container の中で行い、Claude に登録して動かすときだけ Mac の上で動かす。環境が2つに分かれ、`op` と Touch ID、ログの周りがコンテナの中では試せないため

@@ -85,6 +85,7 @@ Google の個人用と仕事用のように、同じサービスで複数のア�
   - リポジトリを ghq で clone してビルドする。npm には公開しない
   - `register`：mise で入れた Node の絶対パスを調べて、Claude Code（ユーザースコープ）と Claude Desktop の設定にサーバーを登録する
   - Node を更新したときや Mac を買い替えたときは、`register` を打ち直す
+  - `unregister`：Claude Code と Claude Desktop の設定から登録を外す
 - **ログ**
   - 操作の記録を `~/Library/Logs/multi-account-mcp.log` に残す。書く・作る・削除のツールが呼ばれるたびに、日時・ツール名・アカウント・ファイル ID とファイル名・成否を1行で書く
   - トークン、ファイルの中身、セルの値は書かない
@@ -138,9 +139,7 @@ Google の個人用と仕事用のように、同じサービスで複数のア�
   - 本番化の前に発行したトークンは7日の期限を引き継ぐので、本番化してからログインし直す
 - ローカル MCP はブラウザの claude.ai からは使えない
 - **要調査**：Claude Desktop から起動したプロセスで、`op` の Touch ID 承認がちゃんと出るか（実装の最初に試す）
-- **要調査**：開発環境を Dev Container にするか。グローバルの指針は「新しい開発環境は必ず Dev Container」だが、このサーバーは Claude Code・Claude Desktop が Mac の上で直接起動し、1Password の Touch ID も `~/Library/Logs` も Mac の上でしか使えない
-  - 案1：Dev Container の例外にする。ランタイムは mise で入れ、DB などのミドルウェアは Mac に直接入れない
-  - 案2：開発とテストは Dev Container の中で行い、Claude に登録して動かすときだけ Mac の上で動かす（環境が2つに分かれる）
+- ~~開発環境を Dev Container にするか~~ → Dev Container の例外にし、Mac の上で直接開発する。Mac を汚さないための対策は `docs/decisions.md` の 20
 - Mac を買い替える・OS を入れ直す場合
   - トークンは 1Password で同期されるので、`login` し直さずに使える（同期されていなくても、`login` をやり直せば新しいトークンが発行される）
   - 新しい Mac でやるのは、コードの clone とビルド、`op` CLI のセットアップ、`register` の3つだけ
@@ -165,6 +164,7 @@ Google の個人用と仕事用のように、同じサービスで複数のア�
 - 2026-10-31: インストールは ghq で clone してビルド。登録は `register` コマンドで Claude Code と Claude Desktop の両方に行う（Node の絶対パスを自動で解決する）。
 - 2026-10-31: ログは操作の記録だけを `~/Library/Logs/multi-account-mcp.log` に1ファイルで残す。秘密情報と中身は書かない。肥大化は1年で15MB程度と見積もり、ローテーションはしない。
 - 2026-10-31: 開発環境を Dev Container にするかを要調査として追加（Mac の上でしか動かないため、指針と食い違う）。
+- 2026-10-31: 開発環境は Dev Container の例外にし、Mac の上で直接開発すると決めた。Mac を汚さないよう、Node は `mise.toml` で固定、依存は `node_modules` に閉じ込めて install スクリプトは止める、`unregister` で登録を外せるようにする。
 - 注意：Claude Desktop はシェルの設定を読まずにサーバーを起動するので、mise で入れた Node は絶対パスで登録する。
 
 ## 参考リンク・リソース
