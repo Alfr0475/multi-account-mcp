@@ -12,7 +12,7 @@
 
 | 表記 | 使う場所 |
 |---|---|
-| `multi-account-mcp` | リポジトリ名、ディレクトリ名、CLI コマンド名、npm パッケージ名、設定フォルダ、Claude に登録するときのサーバー名 |
+| `multi-account-mcp` | リポジトリ名、ディレクトリ名、CLI コマンド名、npm パッケージ名、設定フォルダ、Claude に登録するときのサーバー名、Google Cloud のプロジェクト名と OAuth クライアント名 |
 | Multi-Account MCP | 文章の中（README の見出しなど）、1Password の保管庫名、Google の同意画面に出るアプリ名 |
 
 ## 解決したい課題（Problem）
