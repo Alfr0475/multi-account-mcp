@@ -57,5 +57,5 @@ Dev Container は使わず、Mac の上で直接開発する（`docs/decisions.m
 - [x] `register`・`unregister` と `list_accounts`：Claude Code・Claude Desktop に登録し、Claude からアカウント一覧が見える状態にする
 - [x] 読むツール（`drive_search`、`drive_read`、`sheets_read`）と、アカウントの自動解決（ファイル→アカウントの記録）
 - [x] 書く・作るツール（`sheets_write`、`sheets_append`、`drive_create`、`drive_copy`、`drive_rename`）と操作ログ
-- [ ] `drive_trash`（`destructiveHint` を付ける）
+- [x] `drive_trash`（`destructiveHint` を付ける）
 - [ ] `logout`：トークンを Google 側で取り消してから 1Password から消す

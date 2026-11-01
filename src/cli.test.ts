@@ -64,7 +64,7 @@ test("serve: 初期化に応答する", async () => {
   assert.equal(init.result.serverInfo.name, "multi-account-mcp");
 });
 
-test("serve: list_accounts を読むツールとして出し、アカウント一覧を返す", async () => {
+test("serve: ツールに危険度のヒントを付け、list_accounts でアカウント一覧を返す", async () => {
   const res = await talk([
     {
       id: 1,
@@ -76,8 +76,10 @@ test("serve: list_accounts を読むツールとして出し、アカウント�
     { id: 3, method: "tools/call", params: { name: "list_accounts", arguments: {} } },
   ]);
 
-  const tool = res.get(2).result.tools.find((t: { name: string }) => t.name === "list_accounts");
-  assert.equal(tool.annotations.readOnlyHint, true);
+  const tools = res.get(2).result.tools;
+  const annotationsOf = (name: string) => tools.find((t: { name: string }) => t.name === name).annotations;
+  assert.equal(annotationsOf("list_accounts").readOnlyHint, true);
+  assert.equal(annotationsOf("drive_trash").destructiveHint, true);
 
   // 1Password の項目 ID は Claude に見せない
   const accounts = JSON.parse(res.get(3).result.content[0].text);

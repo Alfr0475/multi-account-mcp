@@ -163,3 +163,32 @@ export const driveRename = defineTool({
     return text({ account: email, ...result });
   },
 });
+
+export const driveTrash = defineTool({
+  name: "drive_trash",
+  title: "ゴミ箱へ移す",
+  description:
+    "ファイルやフォルダを Drive のゴミ箱へ移す（完全には削除しない。30日以内なら Drive のゴミ箱から戻せる）。フォルダは中身ごと移る。移す前に、対象が合っているかをユーザーに確かめること。",
+  risk: "destructive",
+  inputSchema: z.object({ file: fileInput, account: accountInput }),
+  handler: async ({ file, account }, ctx) => {
+    const { id } = parseFileRef(file);
+    ctx.audit.fileId = id;
+    const { email, result } = await withGoogleFile(id, account, async (auth, email) => {
+      ctx.audit.account = email;
+      const d = drive({ version: "v3", auth });
+      const meta = await d.files.get({ fileId: id, supportsAllDrives: true, fields: "name,mimeType,parents" });
+      ctx.audit.fileName = meta.data.name ?? undefined;
+      // 戻すときにどこにあったかが分かるよう、元のフォルダを残す
+      if (meta.data.parents?.[0]) ctx.audit.note = `parent=${meta.data.parents[0]}`;
+      const res = await d.files.update({
+        fileId: id,
+        requestBody: { trashed: true },
+        supportsAllDrives: true,
+        fields: "id,name,mimeType,trashed",
+      });
+      return res.data;
+    });
+    return text({ account: email, ...result, note: "30日以内なら Drive のゴミ箱から戻せる" });
+  },
+});

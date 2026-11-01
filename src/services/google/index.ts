@@ -1,6 +1,6 @@
 import type { Service } from "../../core/service.ts";
 import { login } from "./auth.ts";
-import { driveCopy, driveCreate, driveRename } from "./drive-write.ts";
+import { driveCopy, driveCreate, driveRename, driveTrash } from "./drive-write.ts";
 import { driveRead, driveSearch } from "./drive.ts";
 import { sheetsAppend, sheetsRead, sheetsWrite } from "./sheets.ts";
 
@@ -17,6 +17,8 @@ export const google: Service = {
     driveCreate,
     driveCopy,
     driveRename,
+    // 削除
+    driveTrash,
   ],
   login,
 };
