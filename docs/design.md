@@ -4,9 +4,9 @@
 
 ## ステータス
 
-- **フェーズ**: アイデア
-- **最終更新**: 2026-10-31
-- **Claudeとの議論**: 進行中
+- **フェーズ**: 稼働中（最初のバージョン。Claude Code・Claude Desktop で使っている）
+- **最終更新**: 2026-11-02
+- **Claudeとの議論**: 最初のバージョンまで完了。足りないツールは使いながら足す
 
 ## 名前の表記
 
@@ -167,6 +167,7 @@ Google の個人用と仕事用のように、同じサービスで複数のア�
 - 2026-10-31: 開発環境は Dev Container の例外にし、Mac の上で直接開発すると決めた。Mac を汚さないよう、Node は `mise.toml` で固定、依存は `node_modules` に閉じ込めて install スクリプトは止める、`unregister` で登録を外せるようにする。
 - 2026-10-31: 1Password に専用の保管庫「Multi-Account MCP」を個人用アカウント（my.1password.com）に作った。調査用の MCP サーバーで、Claude Desktop から起動したプロセスでも `op` の Touch ID 承認が出ること、10分あくと再び承認が要ることを確かめた。決定 13 の前提どおり。
 - 2026-11-02: アカウントはメールアドレスで見分けることにした（`docs/decisions.md` の 21）。`login` を作り、個人用と仕事用の両方でログインできた。同意画面にスコープを登録しないままでも、`drive` と `spreadsheets` を受け取れることを確かめた。
+- 2026-11-02: 最初のバージョンのツール10個と `logout` がそろい、Claude Code・Claude Desktop の両方で、個人用と仕事用を横断して使えることを確かめた。Claude Code の permissions で読むツールを自動で許可した（dotfiles の `src/claude/settings.json`）。
 - 注意：Claude Desktop はシェルの設定を読まずにサーバーを起動するので、mise で入れた Node は絶対パスで登録する。
 
 ## 参考リンク・リソース
