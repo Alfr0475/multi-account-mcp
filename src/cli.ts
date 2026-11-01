@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import { login } from "./commands/login.ts";
+import { register, unregister } from "./commands/register.ts";
 import { createServer } from "./core/server.ts";
 import { google } from "./services/google/index.ts";
 import { serveStdio } from "./transport/stdio.ts";
@@ -33,9 +34,13 @@ switch (command) {
   case "login":
     await login(findService(arg));
     break;
-  case "logout":
   case "register":
+    await register();
+    break;
   case "unregister":
+    await unregister();
+    break;
+  case "logout":
     console.error(`${command} はまだ作っていない`);
     process.exitCode = 1;
     break;

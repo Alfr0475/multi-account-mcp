@@ -32,6 +32,9 @@ Dev Container は使わず、Mac の上で直接開発する（`docs/decisions.m
 | `mise exec -- npm test` | テスト（ビルドせずに `.ts` のまま走る） |
 | `mise exec -- npm run typecheck` | 型チェック |
 | `mise exec -- npm run build` | `dist/` にビルドする。Claude に登録するのは `dist/cli.js serve` |
+| `mise exec -- node dist/cli.js login google` | Google のアカウントを足す（ブラウザが開く） |
+| `mise exec -- node dist/cli.js register` | Claude Code（ユーザースコープ）と Claude Desktop に登録する。Claude Desktop は再起動で反映 |
+| `mise exec -- node dist/cli.js unregister` | 両方から登録を外す |
 
 ## コードの構成
 
@@ -40,6 +43,7 @@ Dev Container は使わず、Mac の上で直接開発する（`docs/decisions.m
 - `src/services/<サービス>/`：サービス層
 - 相対 import は `.ts` まで書く（Node がそのまま実行し、ビルド時に `.js` に書き換わる）
 - 標準出力は MCP の通信に使う。`serve` の中で `console.log` を使わない
+- `serve` は `dist/` を動かしている。コードを変えたら `npm run build` しないと Claude 側には反映されない（Claude Code は `/mcp` で再接続、Claude Desktop は再起動）
 
 ## 最初のタスク
 
@@ -48,7 +52,7 @@ Dev Container は使わず、Mac の上で直接開発する（`docs/decisions.m
 - [x] Google Cloud で OAuth クライアントを作って「外部」「本番」にし、Workspace の管理コンソールでこのアプリを信頼済みにする
 - [x] 3層（通信・共通・サービス）の骨組みと、stdio の MCP サーバーを作る
 - [x] `login`：ブラウザで Google にログインし、トークンを 1Password に保存する
-- [ ] `register`・`unregister` と `list_accounts`：Claude Code・Claude Desktop に登録し、Claude からアカウント一覧が見える状態にする
+- [x] `register`・`unregister` と `list_accounts`：Claude Code・Claude Desktop に登録し、Claude からアカウント一覧が見える状態にする
 - [ ] 読むツール（`drive_search`、`drive_read`、`sheets_read`）と、アカウントの自動解決（ファイル→アカウントの記録）
 - [ ] 書く・作るツール（`sheets_write`、`sheets_append`、`drive_create`、`drive_copy`、`drive_rename`）と操作ログ
 - [ ] `drive_trash`（`destructiveHint` を付ける）
