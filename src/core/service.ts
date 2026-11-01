@@ -1,5 +1,6 @@
 import type { CallToolResult, ToolAnnotations } from "@modelcontextprotocol/server";
 import type { z } from "zod";
+import type { Audit } from "./oplog.ts";
 import type { SecretField, SecretStore } from "./secrets.ts";
 
 /**
@@ -16,7 +17,12 @@ export interface Tool<S extends z.ZodObject = z.ZodObject> {
   description: string;
   risk: Risk;
   inputSchema: S;
-  handler: (args: z.infer<S>) => Promise<CallToolResult>;
+  handler: (args: z.infer<S>, ctx: ToolContext) => Promise<CallToolResult>;
+}
+
+export interface ToolContext {
+  /** 操作ログに残す対象。read 以外のツールは、分かったところから埋める（失敗してもそこまでが残る） */
+  audit: Audit;
 }
 
 export interface LoginResult {

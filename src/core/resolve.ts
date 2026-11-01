@@ -32,6 +32,7 @@ export const withFileAccount = async <T>(o: ResolveOptions<T>): Promise<{ email:
   const order =
     recorded && o.accounts.includes(recorded) ? [recorded, ...o.accounts.filter((a) => a !== recorded)] : o.accounts;
 
+  let lastError: unknown;
   for (const email of order) {
     try {
       const result = await o.run(email);
@@ -39,7 +40,11 @@ export const withFileAccount = async <T>(o: ResolveOptions<T>): Promise<{ email:
       return { email, result };
     } catch (e) {
       if (!o.isNoAccess(e)) throw e;
+      lastError = e;
     }
   }
-  throw new Error(`どのアカウントからも開けなかった: ${o.fileId}（${o.accounts.join(", ")} で試した）`);
+  // 閲覧だけできて書けない、などの理由が分かるよう、最後のエラーを添える
+  throw new Error(
+    `どのアカウントからも開けなかった: ${o.fileId}（${o.accounts.join(", ")} で試した）。最後のエラー: ${(lastError as Error).message}`,
+  );
 };

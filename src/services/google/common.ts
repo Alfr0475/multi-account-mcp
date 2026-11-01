@@ -16,7 +16,7 @@ export const text = (value: unknown) => ({ content: [{ type: "text" as const, te
 export const withGoogleFile = async <T>(
   fileId: string,
   account: string | undefined,
-  run: (auth: OAuth2Client) => Promise<T>,
+  run: (auth: OAuth2Client, email: string) => Promise<T>,
 ): Promise<{ email: string; result: T }> => {
   const accounts = await googleAccounts();
   return withFileAccount({
@@ -25,6 +25,17 @@ export const withGoogleFile = async <T>(
     account,
     accounts: accounts.map((a) => a.email),
     isNoAccess,
-    run: async (email) => run(await authFor(accounts.find((a) => a.email === email)!)),
+    run: async (email) => run(await authFor(accounts.find((a) => a.email === email)!), email),
   });
 };
+
+export const authForEmail = async (email: string): Promise<OAuth2Client> => {
+  const account = (await googleAccounts()).find((a) => a.email === email);
+  if (!account) throw new Error(`${email} は繋がっていない。list_accounts で確かめる`);
+  return authFor(account);
+};
+
+export const valuesInput = z
+  .array(z.array(z.union([z.string(), z.number(), z.boolean(), z.null()])))
+  .min(1)
+  .describe("行の配列。各行はセルの値の配列。= で始まる文字列は数式になる。null のセルは変更しない（消すなら空文字）");
