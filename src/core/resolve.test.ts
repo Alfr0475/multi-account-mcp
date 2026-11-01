@@ -82,3 +82,14 @@ test("withFileAccount: アカウントを明示したらそれだけを使い、
     /繋がっていない/,
   );
 });
+
+test("forgetAccount: 外したアカウントの記録だけを消す", async () => {
+  const { forgetAccount, recordAccounts } = await import("./file-index.ts");
+  await recordAccounts("google", [
+    { fileId: "g1", email: "personal@example.com" },
+    { fileId: "g2", email: "work@example.com" },
+  ]);
+  await forgetAccount("google", "personal@example.com");
+  assert.equal(await recordedAccount("google", "g1"), undefined);
+  assert.equal(await recordedAccount("google", "g2"), "work@example.com");
+});

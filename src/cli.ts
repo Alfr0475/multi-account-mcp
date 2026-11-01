@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import { login } from "./commands/login.ts";
+import { logout } from "./commands/logout.ts";
 import { register, unregister } from "./commands/register.ts";
 import { createServer } from "./core/server.ts";
 import { google } from "./services/google/index.ts";
@@ -9,14 +10,15 @@ const usage = `使い方: multi-account-mcp <コマンド>
 
   serve             MCP サーバーとして起動する（Claude Code・Claude Desktop から呼ばれる）
   login <サービス>   ブラウザでログインし、トークンを 1Password に保存する（例: login google）
-  logout            トークンを Google 側で取り消し、1Password から消す
+  logout <サービス> <メール>
+                    トークンをサービス側で取り消し、1Password と設定から消す
   register          Claude Code と Claude Desktop にサーバーを登録する
   unregister        Claude Code と Claude Desktop から登録を外す
 `;
 
 const services = [google];
 
-const [command, arg] = process.argv.slice(2);
+const [command, arg, arg2] = process.argv.slice(2);
 
 const findService = (name: string | undefined) => {
   const service = services.find((s) => s.name === name);
@@ -27,24 +29,29 @@ const findService = (name: string | undefined) => {
   return service;
 };
 
-switch (command) {
-  case "serve":
-    await serveStdio(createServer(services));
-    break;
-  case "login":
-    await login(findService(arg));
-    break;
-  case "register":
-    await register();
-    break;
-  case "unregister":
-    await unregister();
-    break;
-  case "logout":
-    console.error(`${command} はまだ作っていない`);
-    process.exitCode = 1;
-    break;
-  default:
-    console.error(usage);
-    process.exitCode = command === undefined ? 0 : 1;
+try {
+  switch (command) {
+    case "serve":
+      await serveStdio(createServer(services));
+      break;
+    case "login":
+      await login(findService(arg));
+      break;
+    case "register":
+      await register();
+      break;
+    case "unregister":
+      await unregister();
+      break;
+    case "logout":
+      await logout(findService(arg), arg2);
+      break;
+    default:
+      console.error(usage);
+      process.exitCode = command === undefined ? 0 : 1;
+  }
+} catch (e) {
+  // 使う側が読むメッセージだけを出す。原因を追うときは MULTI_ACCOUNT_MCP_DEBUG=1 でスタックも出す
+  console.error(process.env.MULTI_ACCOUNT_MCP_DEBUG ? e : `エラー: ${(e as Error).message}`);
+  process.exitCode = 1;
 }

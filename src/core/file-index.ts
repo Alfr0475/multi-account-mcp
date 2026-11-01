@@ -24,12 +24,11 @@ let writing: Promise<void> = Promise.resolve();
 export const recordedAccount = async (service: string, fileId: string): Promise<string | undefined> =>
   (await load())[key(service, fileId)];
 
-export const recordAccounts = (service: string, entries: { fileId: string; email: string }[]): Promise<void> => {
+/** 記録を書き換える。update が false を返したら書かない */
+const modify = (update: (index: Index) => boolean): Promise<void> => {
   const next = writing.then(async () => {
     const index = await load();
-    const changed = entries.filter((e) => index[key(service, e.fileId)] !== e.email);
-    if (changed.length === 0) return;
-    for (const e of changed) index[key(service, e.fileId)] = e.email;
+    if (!update(index)) return;
     await mkdir(configDir(), { recursive: true, mode: 0o700 });
     const tmp = `${indexFile()}.${process.pid}.tmp`;
     await writeFile(tmp, JSON.stringify(index) + "\n", { mode: 0o600 });
@@ -38,3 +37,18 @@ export const recordAccounts = (service: string, entries: { fileId: string; email
   writing = next.catch(() => undefined);
   return next;
 };
+
+export const recordAccounts = (service: string, entries: { fileId: string; email: string }[]): Promise<void> =>
+  modify((index) => {
+    const changed = entries.filter((e) => index[key(service, e.fileId)] !== e.email);
+    for (const e of changed) index[key(service, e.fileId)] = e.email;
+    return changed.length > 0;
+  });
+
+/** logout したアカウントの記録を消す */
+export const forgetAccount = (service: string, email: string): Promise<void> =>
+  modify((index) => {
+    const keys = Object.keys(index).filter((k) => k.startsWith(`${service}:`) && index[k] === email);
+    for (const k of keys) delete index[k];
+    return keys.length > 0;
+  });

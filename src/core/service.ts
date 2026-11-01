@@ -1,5 +1,6 @@
 import type { CallToolResult, ToolAnnotations } from "@modelcontextprotocol/server";
 import type { z } from "zod";
+import type { Account } from "./config.ts";
 import type { Audit } from "./oplog.ts";
 import type { SecretField, SecretStore } from "./secrets.ts";
 
@@ -37,6 +38,8 @@ export interface Service {
   tools: Tool[];
   /** ブラウザでログインする。保存は呼び出し側が行う */
   login: (store: SecretStore) => Promise<LoginResult>;
+  /** サービス側でトークンを取り消す。1Password と設定からの削除は呼び出し側が行う */
+  logout: (store: SecretStore, account: Account) => Promise<void>;
 }
 
 /** 引数の型を推論させるための入口。`Tool[]` に入れると推論が消えるので、定義はこれを通す */

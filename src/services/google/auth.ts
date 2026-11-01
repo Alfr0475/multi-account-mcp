@@ -3,6 +3,7 @@ import { randomBytes } from "node:crypto";
 import { createServer, type Server } from "node:http";
 import type { AddressInfo } from "node:net";
 import { CodeChallengeMethod, OAuth2Client } from "google-auth-library";
+import type { Account } from "../../core/config.ts";
 import type { LoginResult } from "../../core/service.ts";
 import type { SecretStore } from "../../core/secrets.ts";
 
@@ -102,5 +103,18 @@ export const login = async (store: SecretStore): Promise<LoginResult> => {
     };
   } finally {
     server.close();
+  }
+};
+
+/** リフレッシュトークンを取り消す。このアプリへの許可ごと消え、同じ許可から出たアクセストークンも使えなくなる */
+export const logout = async (store: SecretStore, account: Account): Promise<void> => {
+  const refreshToken = await store.read(account.item, "refresh_token");
+  try {
+    await new OAuth2Client().revokeToken(refreshToken);
+  } catch (e) {
+    // すでに取り消されている（Google アカウントの画面から外した、など）なら先に進む
+    const data = (e as { response?: { data?: { error?: string } } }).response?.data;
+    if (data?.error !== "invalid_token") throw e;
+    console.error("トークンはすでに無効だった");
   }
 };

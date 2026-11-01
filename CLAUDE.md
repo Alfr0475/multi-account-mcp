@@ -35,6 +35,7 @@ Dev Container は使わず、Mac の上で直接開発する（`docs/decisions.m
 | `mise exec -- node dist/cli.js login google` | Google のアカウントを足す（ブラウザが開く） |
 | `mise exec -- node dist/cli.js register` | Claude Code（ユーザースコープ）と Claude Desktop に登録する。Claude Desktop は再起動で反映 |
 | `mise exec -- node dist/cli.js unregister` | 両方から登録を外す |
+| `mise exec -- node dist/cli.js logout google <メール>` | トークンを Google 側で取り消し、1Password と設定から消す |
 
 ## コードの構成
 
@@ -58,4 +59,4 @@ Dev Container は使わず、Mac の上で直接開発する（`docs/decisions.m
 - [x] 読むツール（`drive_search`、`drive_read`、`sheets_read`）と、アカウントの自動解決（ファイル→アカウントの記録）
 - [x] 書く・作るツール（`sheets_write`、`sheets_append`、`drive_create`、`drive_copy`、`drive_rename`）と操作ログ
 - [x] `drive_trash`（`destructiveHint` を付ける）
-- [ ] `logout`：トークンを Google 側で取り消してから 1Password から消す
+- [x] `logout`：トークンを Google 側で取り消してから 1Password から消す
