@@ -1,5 +1,6 @@
 import type { CallToolResult, ToolAnnotations } from "@modelcontextprotocol/server";
 import type { z } from "zod";
+import type { SecretField, SecretStore } from "./secrets.ts";
 
 /**
  * ツールの危険度。Claude Code の permissions で段ごとに許可を分けられるよう、ツール名ではなくここで分ける。
@@ -18,10 +19,18 @@ export interface Tool<S extends z.ZodObject = z.ZodObject> {
   handler: (args: z.infer<S>) => Promise<CallToolResult>;
 }
 
+export interface LoginResult {
+  email: string;
+  /** 1Password の項目に保存するもの */
+  fields: SecretField[];
+}
+
 /** サービス層の1つ（google など）。共通の層はこれを集めて MCP サーバーに登録する */
 export interface Service {
   name: string;
   tools: Tool[];
+  /** ブラウザでログインする。保存は呼び出し側が行う */
+  login: (store: SecretStore) => Promise<LoginResult>;
 }
 
 /** 引数の型を推論させるための入口。`Tool[]` に入れると推論が消えるので、定義はこれを通す */

@@ -47,7 +47,7 @@ Dev Container は使わず、Mac の上で直接開発する（`docs/decisions.m
 - [x] 要調査：Claude Desktop から起動したプロセスで、`op` の Touch ID 承認がちゃんと出るか
 - [x] Google Cloud で OAuth クライアントを作って「外部」「本番」にし、Workspace の管理コンソールでこのアプリを信頼済みにする
 - [x] 3層（通信・共通・サービス）の骨組みと、stdio の MCP サーバーを作る
-- [ ] `login`：ブラウザで Google にログインし、トークンを 1Password に保存する
+- [x] `login`：ブラウザで Google にログインし、トークンを 1Password に保存する
 - [ ] `register`・`unregister` と `list_accounts`：Claude Code・Claude Desktop に登録し、Claude からアカウント一覧が見える状態にする
 - [ ] 読むツール（`drive_search`、`drive_read`、`sheets_read`）と、アカウントの自動解決（ファイル→アカウントの記録）
 - [ ] 書く・作るツール（`sheets_write`、`sheets_append`、`drive_create`、`drive_copy`、`drive_rename`）と操作ログ

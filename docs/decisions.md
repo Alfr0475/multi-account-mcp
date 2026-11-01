@@ -137,3 +137,11 @@
   - `register` と対になる `unregister` を用意する。`logout` → `unregister` → リポジトリ削除 → `mise uninstall node@<ver>` で元に戻せるようにする
 - **理由**: このサーバーは Claude Code・Claude Desktop が Mac の上で直接起動し、1Password の Touch ID も `~/Library/Logs` も Mac の上でしか使えないため。Dev Container を選んでいたのは Mac の環境を汚さないためで、DB などのミドルウェアを使わないこのプロジェクトでは、上の対策で同じ目的を果たせる
 - **退けた案**: 開発とテストは Dev Container の中で行い、Claude に登録して動かすときだけ Mac の上で動かす。環境が2つに分かれ、`op` と Touch ID、ログの周りがコンテナの中では試せないため
+
+## 21. アカウントはメールアドレスで見分ける
+
+- **決めたこと**: アカウントは「サービス＋メールアドレス」の組で見分ける。`list_accounts` や検索結果のラベル、`account` 引数にはメールアドレスを使う
+  - `login` ではメールアドレスを打たない（`multi-account-mcp login google`）。ログインのあと Google から受け取る。そのためスコープに `openid` と `email` を足す
+  - 1Password の項目は、アカウントごとに1つ作る。題名は `google alfr0475@gmail.com` のようにする。`op://` の参照では `@` が使えないので、コードからは項目の ID で読み、ID は設定ファイルのアカウント一覧に持つ（ID は秘密情報ではない）
+- **理由**: 将来、接続先のサービスやアカウントが増えても、名前を考えたり衝突させたりせずに済むため。打つ手間が増えるのは、アカウントを明示したいときだけ
+- **退けた案**: `personal` / `work` のような、自分で付ける短いラベル
