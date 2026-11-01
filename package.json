@@ -16,6 +16,8 @@
     "test": "node --test \"src/**/*.test.ts\""
   },
   "dependencies": {
+    "@googleapis/drive": "27.0.0",
+    "@googleapis/sheets": "18.1.2",
     "@modelcontextprotocol/server": "2.4.0",
     "google-auth-library": "11.3.2",
     "zod": "4.6.7"

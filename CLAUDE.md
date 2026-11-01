@@ -40,6 +40,7 @@ Dev Container は使わず、Mac の上で直接開発する（`docs/decisions.m
 
 - `src/transport/`：通信の層（今は stdio だけ）
 - `src/core/`：共通の層。ツールの危険度（`read` / `write` / `destructive`）は `core/service.ts` の `Risk` で持ち、MCP のヒントはそこから自動で付く
+- アカウントの自動解決は `core/resolve.ts`（サービスに依存しない）。「ファイル→アカウント」の記録は `core/file-index.ts` で、`~/.config/multi-account-mcp/files.json` に置く
 - `src/services/<サービス>/`：サービス層
 - 相対 import は `.ts` まで書く（Node がそのまま実行し、ビルド時に `.js` に書き換わる）
 - 標準出力は MCP の通信に使う。`serve` の中で `console.log` を使わない
@@ -53,7 +54,7 @@ Dev Container は使わず、Mac の上で直接開発する（`docs/decisions.m
 - [x] 3層（通信・共通・サービス）の骨組みと、stdio の MCP サーバーを作る
 - [x] `login`：ブラウザで Google にログインし、トークンを 1Password に保存する
 - [x] `register`・`unregister` と `list_accounts`：Claude Code・Claude Desktop に登録し、Claude からアカウント一覧が見える状態にする
-- [ ] 読むツール（`drive_search`、`drive_read`、`sheets_read`）と、アカウントの自動解決（ファイル→アカウントの記録）
+- [x] 読むツール（`drive_search`、`drive_read`、`sheets_read`）と、アカウントの自動解決（ファイル→アカウントの記録）
 - [ ] 書く・作るツール（`sheets_write`、`sheets_append`、`drive_create`、`drive_copy`、`drive_rename`）と操作ログ
 - [ ] `drive_trash`（`destructiveHint` を付ける）
 - [ ] `logout`：トークンを Google 側で取り消してから 1Password から消す
