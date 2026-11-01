@@ -19,6 +19,7 @@ Claude Code・Claude Desktop から、同じサービスの複数アカウント
 Dev Container は使わず、Mac の上で直接開発する（`docs/decisions.md` の 20）。Mac を汚さないため、次を守る。
 
 - Node はリポジトリ直下の `mise.toml` で固定している。Bash ツールでは `mise exec -- npm ...` のように呼ぶ
+- Node はその時点の LTS を使い、セキュリティリリースが出たらパッチ版を上げる（上げたら `register` を打ち直す）。LTS かどうかは https://nodejs.org/dist/index.json の `lts` で確かめる（mise の `lts` は更新が遅れることがある）
 - `npm -g` は使わない。ツールは devDependencies に入れて `npm run` / `npx` で呼ぶ
 - `.npmrc` の `ignore-scripts=true` を外さない。依存を足すときは本当に要るかを先に考える
 - テストや開発中は、設定フォルダとログを環境変数で一時ディレクトリに向け、本番の `~/.config/multi-account-mcp/` と `~/Library/Logs/multi-account-mcp.log` を汚さない

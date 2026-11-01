@@ -1,3 +1,3 @@
 [tools]
 # register が Node の絶対パスを登録するので、パッチまで固定する（更新したら register を打ち直す）
-node = "24.22.2"
+node = "26.13.0"
