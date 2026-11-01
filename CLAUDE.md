@@ -24,12 +24,29 @@ Dev Container は使わず、Mac の上で直接開発する（`docs/decisions.m
 - `.npmrc` の `ignore-scripts=true` を外さない。依存を足すときは本当に要るかを先に考える
 - テストや開発中は、設定フォルダとログを環境変数で一時ディレクトリに向け、本番の `~/.config/multi-account-mcp/` と `~/Library/Logs/multi-account-mcp.log` を汚さない
 
+## コマンド
+
+| コマンド | すること |
+|---|---|
+| `mise exec -- npm ci` | 依存を入れる（lockfile どおり） |
+| `mise exec -- npm test` | テスト（ビルドせずに `.ts` のまま走る） |
+| `mise exec -- npm run typecheck` | 型チェック |
+| `mise exec -- npm run build` | `dist/` にビルドする。Claude に登録するのは `dist/cli.js serve` |
+
+## コードの構成
+
+- `src/transport/`：通信の層（今は stdio だけ）
+- `src/core/`：共通の層。ツールの危険度（`read` / `write` / `destructive`）は `core/service.ts` の `Risk` で持ち、MCP のヒントはそこから自動で付く
+- `src/services/<サービス>/`：サービス層
+- 相対 import は `.ts` まで書く（Node がそのまま実行し、ビルド時に `.js` に書き換わる）
+- 標準出力は MCP の通信に使う。`serve` の中で `console.log` を使わない
+
 ## 最初のタスク
 
 - [x] 開発環境を決める（Dev Container の指針を踏まえて）
 - [x] 要調査：Claude Desktop から起動したプロセスで、`op` の Touch ID 承認がちゃんと出るか
 - [x] Google Cloud で OAuth クライアントを作って「外部」「本番」にし、Workspace の管理コンソールでこのアプリを信頼済みにする
-- [ ] 3層（通信・共通・サービス）の骨組みと、stdio の MCP サーバーを作る
+- [x] 3層（通信・共通・サービス）の骨組みと、stdio の MCP サーバーを作る
 - [ ] `login`：ブラウザで Google にログインし、トークンを 1Password に保存する
 - [ ] `register`・`unregister` と `list_accounts`：Claude Code・Claude Desktop に登録し、Claude からアカウント一覧が見える状態にする
 - [ ] 読むツール（`drive_search`、`drive_read`、`sheets_read`）と、アカウントの自動解決（ファイル→アカウントの記録）
